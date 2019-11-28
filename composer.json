@@ -1,0 +1,22 @@
+{
+    "name": "zhujinkui/gdposter",
+    "description": "This is a poster generated using the GD Library.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "zhujinkui",
+            "email": "developer@zhujinkui.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=5.6.0"
+    },
+    "autoload": {
+        "files": [],
+        "psr-4": {
+            "think\\": "src/"
+        }
+    }
+}
