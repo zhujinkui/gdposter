@@ -8,18 +8,21 @@
 // | Author: 阶级娃儿 <262877348@qq.com> 群：304104682
 // +----------------------------------------------------------------------
 namespace think;
+use think\facade\Env;
 
 class ImageLib
 {
 	public $im;
 	public $width;
 	public $height;
+	public $dir_path;
 
 	function __construct($width, $height, $background = '255, 254, 253')
 	{
-		$this->width  = $width;
-		$this->height = $height;
-		$this->im     = imagecreatetruecolor($this->width, $this->height);
+		$this->width    = $width;
+		$this->height   = $height;
+		$this->dir_path = Env::get('root_path');
+		$this->im       = imagecreatetruecolor($this->width, $this->height);
 	}
 
 	public function printImage($image, $new_url = '')
@@ -46,19 +49,19 @@ class ImageLib
 
 		imagefill($this->im, 0, 0, $color);
 
-		$font_file_msyhbd = 'D:/phpEnv/www/gdposter/fonts/msyhbd.ttc';
-		$font_file_msyh   = 'D:/phpEnv/www/gdposter/fonts/msyh.ttc';
-		$font_file_apple  = 'D:/phpEnv/www/gdposter/fonts/apple.ttf';
-		$font_file_jianti = 'D:/phpEnv/www/gdposter/fonts/jianti.ttf';
+		$font_file_msyhbd = $this->dir_path.'public/static/fonts/msyhbd.ttc';
+		$font_file_msyh   = $this->dir_path.'public/static/fonts/msyh.ttc';
+		$font_file_apple  = $this->dir_path.'public/static/fonts/apple.ttf';
+		$font_file_jianti = $this->dir_path.'public/static/fonts/jianti.ttf';
 
 		// 商品图片
 		$goods = $image['url'];
-		list($goods_w,$goods__h) = getimagesize($goods);
+		list($goods_w,$goods_h) = getimagesize($goods);
 		$goods_res = imagecreatefromjpeg($goods);
-		imagecopyresized($this->im, $goods_res, 10, 10, 0, 0, 340, 340, $goods_w, $goods__h);
+		imagecopyresized($this->im, $goods_res, 10, 10, 0, 0, 340, 340, $goods_w, $goods_h);
 
 		// 价格
-		$price = './images/price.png';
+		$price = $this->dir_path.'public/base//images/price.png';
 		list($price_w,$price_h) = getimagesize($price);
 		$price_res = imagecreatefrompng($price);
 		imagecopyresized($this->im, $price_res, 231, 280, 0, 0, $price_w, $price_h, $price_w, $price_h);
@@ -67,10 +70,10 @@ class ImageLib
 
 		// 图标
 		if ($image['mall_type']) {
-			$logo           = './images/tmall.png';
+			$logo           = $this->dir_path.'public/base//images/tmall.png';
 			$mall_type_mame = '天猫价';
 		} else {
-			$logo           = './images/taobao.png';
+			$logo           = $this->dir_path.'public/base//images/taobao.png';
 			$mall_type_mame = '淘宝价';
 		}
 
@@ -88,11 +91,11 @@ class ImageLib
 		// 二维码
 		$code                 = $image['user_code'];
 		list($code_w,$code_h) = getimagesize($code);
-		$code_res             = imagecreatefrompng($code);
+		$code_res             = imagecreatefromjpeg($code);
 		imagecopyresized($this->im, $code_res, 30, 480, 0, 0, 110, 110, $code_w, $code_h);
 
 		// 指纹
-		$zhiwen                   = './images/zhiwen.jpg';
+		$zhiwen                   = $this->dir_path.'public/base//images/zhiwen.jpg';
 		list($zhiwen_w,$zhiwen_h) = getimagesize($zhiwen);
 		$zhiwen_res               = imagecreatefromjpeg($zhiwen);
 		imagecopyresized($this->im, $zhiwen_res, 230, 490, 0, 0, 43, 43, $zhiwen_w, $zhiwen_h);
