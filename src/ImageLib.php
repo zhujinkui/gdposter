@@ -55,15 +55,14 @@ class ImageLib
 		$font_file_jianti = $this->dir_path.'public/static/fonts/jianti.ttf';
 
 		// 商品图片
-		$goods = $image['url'];
-		list($goods_w,$goods_h) = getimagesize($goods);
-		$goods_res = imagecreatefromjpeg($goods);
+		list($goods_w,$goods_h) = getimagesize($image['url']);
+		$goods_res = $this->getResourceImg($image['url']);
 		imagecopyresized($this->im, $goods_res, 10, 10, 0, 0, 340, 340, $goods_w, $goods_h);
 
 		// 价格
 		$price = $this->dir_path.'public/base//images/price.png';
 		list($price_w,$price_h) = getimagesize($price);
-		$price_res = imagecreatefrompng($price);
+		$price_res = $this->getResourceImg($price);
 		imagecopyresized($this->im, $price_res, 231, 280, 0, 0, $price_w, $price_h, $price_w, $price_h);
 		imagettftext($this->im, 16,0, 290, 315, $orange, $font_file_apple, $image['price']);
 		imagettftext($this->im, 16,0, 291, 317, $white, $font_file_apple, $image['price']);
@@ -78,7 +77,7 @@ class ImageLib
 		}
 
 		list($logo_w,$logo_h) = getimagesize($logo);
-		$logo_res = imagecreatefrompng($logo);
+		$logo_res = $this->getResourceImg($logo);
 		imagecopyresized($this->im, $logo_res, 10, 360, 0, 0, 15, 15, $logo_w, $logo_h);
 		imagettftext($this->im, 10, 0, 30, 373, $black, $font_file_msyh, $this->cut_text($image['title'], 23));
 		imagettftext($this->im, 10, 0, 10, 410, $red, $font_file_msyh, "券后价￥");
@@ -89,15 +88,14 @@ class ImageLib
 		imagettftext($this->im, 10,0, 10, 430, $gray_black, $font_file_apple, $image['format_volume']);
 
 		// 二维码
-		$code                 = $image['user_code'];
-		list($code_w,$code_h) = getimagesize($code);
-		$code_res             = imagecreatefromjpeg($code);
+		list($code_w,$code_h) = getimagesize($image['user_code']);
+		$code_res             = $this->getResourceImg($image['user_code']);
 		imagecopyresized($this->im, $code_res, 30, 480, 0, 0, 110, 110, $code_w, $code_h);
 
 		// 指纹
 		$zhiwen                   = $this->dir_path.'public/base//images/zhiwen.jpg';
 		list($zhiwen_w,$zhiwen_h) = getimagesize($zhiwen);
-		$zhiwen_res               = imagecreatefromjpeg($zhiwen);
+		$zhiwen_res               = $this->getResourceImg($zhiwen);
 		imagecopyresized($this->im, $zhiwen_res, 230, 490, 0, 0, 43, 43, $zhiwen_w, $zhiwen_h);
 		imagettftext($this->im, 10, 0, 180, 560, $black, $font_file_apple, '"'.$image['nickname'].'" 分享好物');
 		imagettftext($this->im, 8, 0, 217, 580, $black, $font_file_apple, '指纹长按识别');
@@ -131,4 +129,28 @@ class ImageLib
 	        return $text;
 	    }
 	}
+
+	/*
+     * 根据绝对路径的图片地址获取对应的图片资源，
+     */
+    private function getResourceImg($img)
+    {
+        $wh  = getimagesize($img);//比pathinfo要准
+        $src_img = null;
+        switch ($wh[2]) {
+            case 1:
+                //gif
+                $src_img = imagecreatefromgif($img);
+                break;
+            case 2:
+                //jpg
+                $src_img = imagecreatefromjpeg($img);
+                break;
+            case 3:
+                //png
+                $src_img = imagecreatefrompng($img);
+                break;
+        }
+        return $src_img;
+    }
 }
